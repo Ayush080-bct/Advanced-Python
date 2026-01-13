@@ -1,0 +1,147 @@
+res = cursor.execute("SELECT name FROM sqlite_master")
+res.fetchone()
+Output:
+
+bash
+Copy code
+('students',)
+Step 1: What is sqlite_master?
+sqlite_master is a special table in every SQLite database.
+
+It stores metadata about your database objects:
+
+Tables
+
+Indexes
+
+Views
+
+Triggers
+
+Think of it as the database’s table of contents.
+
+Columns of sqlite_master include:
+
+type → 'table', 'index', etc.
+
+name → the object name
+
+tbl_name → table the object belongs to
+
+sql → the SQL used to create it
+
+Step 2: Your query
+sql
+Copy code
+SELECT name FROM sqlite_master
+You are asking SQLite:
+
+“Give me the name of all database objects.”
+
+cursor.execute() returns a cursor object itself (here stored in res).
+
+Step 3: Fetching the first row
+python
+Copy code
+res.fetchone()
+fetchone() returns the next row from the result set.
+
+Each row is a tuple, even if it has only one column.
+
+That’s why you see:
+
+bash
+Copy code
+('students',)
+✅ Meaning: The first object in your database is a table named students.
+
+Step 4: If you want all rows
+python
+Copy code
+res.fetchall()
+Returns a list of tuples for all objects:
+
+python
+Copy code
+[('students',), ('teachers',), ...]
+Quick tips:
+The comma inside ('students',) is Python’s way of saying it’s a tuple.
+
+If you want just the string:
+
+python
+Copy code
+row = res.fetchone()
+print(row[0])  # prints: students
+Example:
+python
+Copy code
+import sqlite3
+
+conn = sqlite3.connect("school.db")
+cursor = conn.cursor()
+
+# Create table
+cursor.execute("CREATE TABLE IF NOT EXISTS students (id INTEGER, name TEXT)")
+conn.commit()
+
+# List all objects
+cursor.execute("SELECT name FROM sqlite_master WHERE type='table'")
+print(cursor.fetchall())
+
+
+
+
+
+
+Step 1: What is sqlite_master?
+
+sqlite_master stores all objects in your database: tables, indexes, views, triggers.
+
+Its name column contains the names of these objects — not the columns inside tables, only the table/index/view names.
+
+Step 2: What you queried
+SELECT name 
+FROM sqlite_master 
+WHERE name='age'
+
+
+You asked SQLite:
+
+“Give me the object in the database whose name is 'age'”
+
+Question: Does your database have a table (or index, etc.) named age?
+
+If not → SQLite returns nothing, i.e., None in Python.
+
+Step 3: Why you got None
+
+fetchone() returns the first row of results.
+
+If the query returns no rows, Python returns None.
+
+So your database likely has no table or object named age.
+
+Step 4: How to see column names instead of table names
+
+If you want to check columns of a table, you cannot use sqlite_master the way you did.
+
+Example for table students:
+
+cursor.execute("PRAGMA table_info(students)")
+columns = cursor.fetchall()
+print(columns)
+
+
+Output might look like:
+
+[(0, 'id', 'INTEGER', 0, None, 1), (1, 'name', 'TEXT', 0, None, 0), (2, 'age', 'INTEGER', 0, None, 0)]
+
+
+Column 1 ('name') in the tuple is the column name
+
+Now you can see if your table has a c
+
+
+
+
