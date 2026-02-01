@@ -2,7 +2,7 @@ from manim import *
 
 class SimpleScene(Scene):
     def construct(self):
-        text = Text("Hello, Math!").scale(1.5)
+        text = Text("Hello,OK").scale(1.5)
         self.play(FadeIn(text))
         self.wait(2)
 #to run this ->manim -pql simple_scene.py SimpleScene
